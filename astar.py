@@ -11,14 +11,11 @@ def makeWall(i, j, event=None):
 
 def setstate(event):
     global state
-    if event.char == 'w':
-        state = 'w'
-    elif event.char == 'p':
-        state = 'p'
-    elif event.char == 's':
-        state = 's'
-    elif event.char == 'f':
-        state = 'f'
+    char = event.char
+    states = ['w', 'p', 's', 'f']
+    if char in states:
+        state = states
+    
 
 class tile(tk.Frame):
     def __init__(self, h, w, i, j):
