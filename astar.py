@@ -1,12 +1,27 @@
 import tkinter as tk
+import tkinter.messagebox as mbox
 import math
 
 w, h = 30, 30
 tiles = [[0 for x in range(w)] for y in range(h)]
 state = 'w'
+has_start = False
+has_finish = False
 
 def makeWall(i, j, event=None):
-    global tiles, state
+    global tiles, state, has_finish, has_start
+    if has_start and state == 's':
+        mbox.showerror('Error', 'Only one start position')
+        return
+    elif state == 's':
+        has_start = True
+
+
+    if has_finish and state == 'f':
+        mbox.showerror("Error", 'Only one finish position')
+        return
+    elif state == 'f':
+        has_finish = True
     states = {
         'w': 'black', 
         'p': 'white', 
@@ -15,6 +30,7 @@ def makeWall(i, j, event=None):
     }
     tiles[i][j].state = state
     tiles[i][j].frame.config(bg=states[state])
+
 def setstate(event):
     global state
     char = event.char
