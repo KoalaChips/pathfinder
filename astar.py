@@ -5,23 +5,23 @@ import math
 w, h = 30, 30
 tiles = [[0 for x in range(w)] for y in range(h)]
 state = 'w'
-has_start = False
-has_finish = False
+start = [0, 0]
+end = [0, 0]
+
 
 def makeWall(i, j, event=None):
-    global tiles, state, has_finish, has_start
-    if has_start and state == 's':
-        mbox.showerror('Error', 'Only one start position')
-        return
-    elif state == 's':
-        has_start = True
-
-
-    if has_finish and state == 'f':
-        mbox.showerror("Error", 'Only one finish position')
-        return
+    global tiles, state, start, end
+    if state == 's':
+        tiles[start[0]][start[1]].frame.config(bg='white')
+        tiles[start[0]][start[1]].state = 'p'
+        start[0] = i
+        start[1] = j
     elif state == 'f':
-        has_finish = True
+        tiles[end[0]][end[1]].frame.config(bg='white')
+        tiles[end[0]][end[1]].state = 'p'
+        end[0] = i
+        end[1] = j
+
     states = {
         'w': 'black', 
         'p': 'white', 
@@ -49,7 +49,7 @@ class tile(tk.Frame):
                               highlightthickness=1, 
                               bd=10)
         self.frame.grid(row=i, column=j)
-        self.frame.bind("<Button-1>", lambda e: makeWall(i, j))
+        self.frame.bind("<B1-Motion>", lambda e: makeWall(i, j))
         self.state = state
 
 
