@@ -8,7 +8,32 @@ tiles = [[0 for x in range(w)] for y in range(h)]
 state = 'w'
 start = {'i':-1, 'j':-1}
 finish = {'i':-1, 'j':-1}
+path = []
+found = []
 status = False
+
+def astaralgo():
+    global start, finish, tiles, path, found
+    finished = False
+    i = start['i']
+    j = start['j'] 
+
+    while finished == False:
+        tilesaround(tiles, i, j)
+        finished = True
+
+def tilesaround(tiles, i, j):
+    # calculates g-cost(d from start), h-cost(d from finish), f-cost(total of g and h) 
+    # of the surrounding tiles
+    rows = [i-1 , i, i+1]
+    columns = [j-1, j, j+1]
+    print(i, j)
+    for row in rows:
+        for column in columns:
+            if not(row == i and column == j):
+                tiles[row][column].frame.config(bg='green3')
+            
+
 
 
 def makeState(event, tile):
@@ -17,8 +42,6 @@ def makeState(event, tile):
     y = tile.row * cellY + event.y
     i = math.floor(y/cellY)
     j = math.floor(x/cellX)
-    print(x, y, w, h)
-    print(i, j)
 
     if state == 'w':
         colour = 'gray5'
@@ -60,6 +83,11 @@ def setstate(event):
         state = 's'
     elif event.char == '4':
         state = 'f'
+    elif event.char == 'g':
+        if finish['i'] != -1 and start['i'] != -1:
+            astaralgo()
+    elif event.char == 'x':
+        createtiles()
 
 
 class tile(tk.Frame):
@@ -74,10 +102,19 @@ class tile(tk.Frame):
                               bd=10)
         self.frame.grid(row=i, column=j)
         self.state = 'p'
-        #self.frame.bind("<Enter>", lambda event, obj=self: makeState(event, obj))
+        self.gcost = -1
+        self.hcost = -1
+        self.fcost = -1
+        self.frame.bind("<Button-1>", lambda event, obj=self: makeState(event, obj))
         self.frame.bind("<B1-Motion>", lambda event, obj=self: makeState(event, obj))
         self.row = i
         self.column = j
+
+def createtiles():
+    global w, h, tiles
+    for i in range(w):
+        for j in range(h):
+            tiles[i][j] = tile(20, 20, i, j)
 
 
 if __name__ == '__main__':
@@ -85,16 +122,7 @@ if __name__ == '__main__':
     root.geometry(size)
     root.bind("<Key>", setstate)
 
-    #root.bind("<B1-Motion>", makeState)
-    #root.bind("<Button-1>", changeStatus)
-    #root.bind("<ButtonRelease-1>", changeStatus)
-
-
-    w, h = 30, 30
-    tiles = [[0 for x in range(w)] for y in range(h)]
-    for i in range(w):
-        for j in range(h):
-            tiles[i][j] = tile(20, 20, i, j)
+    createtiles()
 
     root.mainloop()
 
